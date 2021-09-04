@@ -1,9 +1,14 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, jsonify, json, request
 
-import pymongo
+import logging
 from flask_pymongo import PyMongo
 from jaeger_client import Config
 from flask_opentracing import FlaskTracing
+
+from prometheus_flask_exporter import PrometheusMetrics
+
+logging.basicConfig(level=logging.INFO)
+logging.info("Setting LOGLEVEL to INFO")
 
 app = Flask(__name__)
 
@@ -11,6 +16,8 @@ app.config['MONGO_DBNAME'] = 'example-mongodb'
 app.config['MONGO_URI'] = 'mongodb://example-mongodb-svc.default.svc.cluster.local:27017/example-mongodb'
 
 mongo = PyMongo(app)
+metrics = PrometheusMetrics(app)
+metrics.info("app_info", "App Info, this can be anything you want", version="1.0.0")
 
 config = Config(
     config={
@@ -42,6 +49,15 @@ def add_star():
   new_star = star.find_one({'_id': star_id })
   output = {'name' : new_star['name'], 'distance' : new_star['distance']}
   return jsonify({'result' : output})
+
+@app.route('/healthz')
+def healthcheck():
+    response = app.response_class(
+            response=json.dumps({"result":"OK - healthy"}),
+            status=200,
+            mimetype='application/json'
+        )
+    return response
 
 if __name__ == "__main__":
     app.run()
