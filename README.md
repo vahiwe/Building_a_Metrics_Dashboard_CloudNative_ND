@@ -37,6 +37,8 @@
 *TODO:* Create a dashboard to measure the uptime of the frontend and backend services We will also want to measure to measure 40x and 50x errors. Create a dashboard that show these values over a 24 hour period and take a screenshot.
 ![HTTP Errors](answer-img/http_error.png)
 
+![Uptime](answer-img/uptime_graph.png)
+
 ## Tracing our Flask App
 *TODO:*  We will create a Jaeger span to measure the processes on the backend. Once you fill in the span, provide a screenshot of it here.
 ![Jaegar Traces](answer-img/jaegar_traces.png)
@@ -71,10 +73,24 @@ Description: Sending a post request to the `/star` endpoint returns a 500 status
 - Service uptime should be greater than 99.95%
 - HTTP status code should be 20X for more than 99.95% of requests
 - HTTP status code should be 50X or 40x for less than 0.05% of requests
+- HTTP request average response time should be less than 100ms.
 
 
 ## Building KPIs for our plan
 *TODO*: Now that we have our SLIs and SLOs, create KPIs to accurately measure these metrics. We will make a dashboard for this, but first write them down here.
+
+- Service uptime should be greater than 99.95%
+    - Using the prometheus `up` function we can track the uptime value of all containers.
+- HTTP status code should be 20X for more than 99.95% of requests
+    - The `flask_prometheus_exporter` provides us metrics from inside the flask applications. We can calculate the percentage of requests with 20x status code using the `flask_http_request_total` metric from the exporter.
+- HTTP status code should be 50X or 40x for less than 0.05% of requests
+    - The `flask_prometheus_exporter` provides us metrics from inside the flask applications. We can calculate the percentage of requests with 5xx or 4xx status code using the `flask_http_request_total` metric from the exporter.
+- HTTP request average response time should be less than 100ms.
+    - The `flask_prometheus_exporter` provides us metrics from inside the flask applications. We can calculate the the latency of requests using the `flask_http_request_duration_seconds_sum` and `flask_http_request_total` metrics from the exporter.
+- CPU usage should be less than 70%
+    - The node_exporter provides metrics for the containers in a cluster. The `container_cpu_user_seconds_total` metric can be used in tracking this in the cluster.
+- Memory usage should be less than 70%.
+    - The node_exporter provides metrics for the containers in a cluster. The `container_memory_usage_bytes` metric can be used in tracking this in the cluster.
 
 - Service uptime all applications should be greater than 99.95%
 - HTTP request average response time should be less than 100ms.
@@ -85,11 +101,18 @@ Description: Sending a post request to the `/star` endpoint returns a 500 status
 ## Final Dashboard
 *TODO*: Create a Dashboard containing graphs that capture all the metrics of your KPIs and adequately representing your SLIs and SLOs. Include a screenshot of the dashboard here, and write a text description of what graphs are represented in the dashboard.  
 
-- Http 4xx Error, Http 5xx Error, Memory Usage, CPU usage
+- The graph below has the following KPIs:
+    - HTTP 5xx Error - This displays the number of 5xx status codes from both the frontend and backend
+    - HTTP 4xx Errors - This displays the number of 4xx status codes from both the frontend and backend
+    - CPU Usage - This keeps track of the CPU usage in both the frontend and backend
+    - Memory Usage - This keeps track of the Memory usage in both the frontend and backend
 
 ![Final Graph](answer-img/final_graph_1.png)
 
 
-- Jaegar Trace, Latency, uptime
+- The graph below has the following KPIs:
+    - Jaegar Trace - This tracks the number of traces from Jaegar
+    - Uptime - This displays the uptime percentage of both the frontend and backend
+    - Latency - This measures the latency in requests in both the frontend and backend
 
 ![Final Graph](answer-img/final_graph_2.png)
