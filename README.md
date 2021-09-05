@@ -92,12 +92,6 @@ Description: Sending a post request to the `/star` endpoint returns a 500 status
 - Memory usage should be less than 70%.
     - The node_exporter provides metrics for the containers in a cluster. The `container_memory_usage_bytes` metric can be used in tracking this in the cluster.
 
-- Service uptime all applications should be greater than 99.95%
-- HTTP request average response time should be less than 100ms.
-- CPU usage should be less than 70%
-- Memory usage should be less than 70%.
-- HTTP status code should be 50X or 40x for less than 0.05% of requests
-
 ## Final Dashboard
 *TODO*: Create a Dashboard containing graphs that capture all the metrics of your KPIs and adequately representing your SLIs and SLOs. Include a screenshot of the dashboard here, and write a text description of what graphs are represented in the dashboard.  
 
